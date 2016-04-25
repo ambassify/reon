@@ -1,27 +1,32 @@
 'use strict';
 
-import memoize from 'lodash.memoize';
-
 // https://github.com/facebook/react/blob/67f8524e88abbf1ac0fd86d38a0477d11fbc7b3e/src/shared/utils/PooledClass.js
 import PooledClass from 'react/lib/PooledClass';
 import ReactEvent from 'react/lib/SyntheticEvent';
 
 const __PROPERTIES__ = Symbol('Properties set');
 
-const isSyntheticEvent = memoize(e => {
-    // Check for our own events
+const _isSyntheticEventCache = {};
+const isSyntheticEvent = function(e) {
+    const key = e && e.__proto__ ? e.__proto__.constructor : '__none__';
+
+    if (_isSyntheticEventCache[key])
+        return _isSyntheticEventCache[key];
+
+    let value;
+
     if (e instanceof ReonEvent) // eslint-disable-line no-use-before-define
-        return true;
+        value = true;
+    else if (!e || !e.__proto__)
+        value = false;
+    else if (e.__proto__.constructor.name === ReactEvent.name)
+        value = true;
+    else
+        value = isSyntheticEvent(e.__proto__);
 
-    if (!e || !e.__proto__)
-        return false;
-
-    // Check for React SyntheticEvent
-    if (e.__proto__.constructor.name === ReactEvent.name)
-        return true;
-
-    return isSyntheticEvent(e.__proto__);
-}, e => e && e.__proto__ ? e.__proto__.constructor : '__none__');
+    _isSyntheticEventCache[key] = value;
+    return value;
+};
 
 function executeEvent(handler, reactElement, properties) {
     if (typeof handler != 'function')
@@ -104,7 +109,7 @@ class ReonEvent {
         else if (this.nativeEvent)
             this.nativeEvent.defaultPrevented;
         else
-            return false
+            return false;
     }
 
     isPropagationStopped() {

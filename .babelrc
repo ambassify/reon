@@ -1,0 +1,19 @@
+{
+    "presets": [ "es2015", "stage-0" ],
+    "comments": false,
+    "plugins": [
+        "transform-runtime",
+        "transform-undefined-to-void",
+        "transform-property-literals",
+        "transform-member-expression-literals",
+        "transform-dev"
+    ],
+    "env": {
+        "production": {
+            "compact": true
+        },
+        "development": {
+            "sourceMaps": "inline"
+        }
+    }
+}

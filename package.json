@@ -46,6 +46,10 @@
     "react": "^0.14.0 || ^15.0.0"
   },
   "jest": {
+    "coverageReporters": [
+      "json-summary",
+      "lcov"
+    ],
     "collectCoverage": true,
     "testDirectoryName": "tests",
     "testPathDirs": [

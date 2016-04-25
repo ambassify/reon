@@ -1,6 +1,6 @@
 {
   "name": "reon",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Event library for React built to resemble React's internal Synthetic Events",
   "main": "lib/index.js",
   "scripts": {
@@ -13,10 +13,11 @@
     "url": "git+https://github.com/ambassify/reon.git"
   },
   "keywords": [
-    "React",
+    "react",
     "event",
     "events",
-    "Synthetic"
+    "synthetic",
+    "synthetic event"
   ],
   "author": "Ambassify <dev@ambassify.com>",
   "license": "MIT",

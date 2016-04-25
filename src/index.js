@@ -105,9 +105,9 @@ class ReonEvent {
 
     isDefaultPrevented() {
         if (this.reactEvent)
-            this.reactEvent.isDefaultPrevented();
+            return this.reactEvent.isDefaultPrevented();
         else if (this.nativeEvent)
-            this.nativeEvent.defaultPrevented;
+            return this.nativeEvent.defaultPrevented;
         else
             return false;
     }

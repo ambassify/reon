@@ -7,7 +7,7 @@ import ReactEvent from 'react/lib/SyntheticEvent';
 const __PROPERTIES__ = Symbol('Properties set');
 
 const _isSyntheticEventCache = {};
-const isSyntheticEvent = function(e) {
+export const isSyntheticEvent = function(e) {
     const key = e && e.__proto__ ? e.__proto__.constructor : '__none__';
 
     if (_isSyntheticEventCache[key])

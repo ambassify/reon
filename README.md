@@ -96,4 +96,4 @@ We are releasing this under a MIT License.
 
 ## About us
 
-If you would like to know more about us, be sure to have a look at [our website](https://www.ambassify.com), or our Twitter accounts [Sitebase](https://twitter.com/sitebase), [JorgenEvens](https://jorgen.evens.eu)
+If you would like to know more about us, be sure to have a look at [our website](https://www.ambassify.com), or our Twitter accounts [Ambassify](https://twitter.com/Ambassify), [Sitebase](https://twitter.com/Sitebase), [JorgenEvens](https://twitter.com/JorgenEvens)

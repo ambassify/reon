@@ -2,7 +2,7 @@
 
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import Reon, { isSyntheticEvent } from '../src/index';
+import Reon, { isSyntheticEvent, getFunctionName } from '../src/index';
 
 describe('Reon', () => {
 
@@ -143,6 +143,63 @@ describe('Reon', () => {
         console.error = jest.fn();
         Reon.forward(undefined, undefined, undefined, {});
         expect(console.error).toBeCalled();
+    });
+
+    describe('getFunctionName', () => {
+
+        it('should return the correct function name', () => {
+            const f = function helloWorld() {};
+            const name = getFunctionName(f);
+
+            expect(name).toBe('helloWorld');
+        });
+
+        it('should return the correct funtion name in IE', () => {
+            const f = function helloWorld() {};
+
+            // Emulate Internet Explorer which does not have the name property.
+            Object.defineProperty(f, 'name', {
+                value: false
+            });
+
+            const name = getFunctionName(f);
+            expect(name).toBe('helloWorld');
+        });
+
+        it('should return the correct function name in IE for Function', () => {
+            const f = Function;
+
+            // Emulate Internet Explorer which does not have the name property.
+            const FunctionDescriptor = Object.getOwnPropertyDescriptor(f, 'name');
+            Object.defineProperty(f, 'name', {
+                value: false
+            });
+
+            const name = getFunctionName(f);
+            expect(name).toBe('Function');
+
+            // Reset original descriptor
+            Object.defineProperty(f, 'name', FunctionDescriptor);
+        });
+
+        it('should not return a name for anonymous functions', () => {
+            const f = function() {
+                // Babel add the name `f` to the method when we assign it directly.
+                return function() {};
+            }();
+
+            // Emulate Internet Explorer which does not have the name property.
+            Object.defineProperty(f, 'name', {
+                value: false
+            });
+
+            const name = getFunctionName(f);
+
+            console.log(f.toString());
+
+            expect(name).toBeUndefined();
+        });
+
     });
 
 });

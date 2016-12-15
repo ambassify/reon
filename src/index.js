@@ -137,4 +137,7 @@ class ReonEvent {
 
 }
 
+export const trigger = ReonEvent.trigger;
+export const forward = ReonEvent.forward;
+
 PooledClass.addPoolingTo(ReonEvent, PooledClass.twoArgumentPooler);

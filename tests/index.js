@@ -2,7 +2,7 @@
 
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import Reon, { isSyntheticEvent, getFunctionName } from '../src/index';
+import Reon, { trigger, forward, isSyntheticEvent, getFunctionName } from '../src/index';
 
 describe('Reon', () => {
 
@@ -198,6 +198,19 @@ describe('Reon', () => {
             console.log(f.toString());
 
             expect(name).toBeUndefined();
+        });
+
+        it('should export trigger function', () => {
+            const handler = jest.fn(() => {});
+            trigger(handler);
+            expect(handler.mock.calls.length).toBe(1);
+        });
+
+        it('should export forward function', () => {
+            const fixt_event = new Reon(undefined, {});
+            const handler = jest.fn(() => {});
+            Reon.forward(handler, undefined, fixt_event);
+            expect(handler.mock.calls.length).toBe(1);
         });
 
     });

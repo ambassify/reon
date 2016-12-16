@@ -1,6 +1,6 @@
 {
   "name": "reon",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Event library for React built to resemble React's internal Synthetic Events",
   "main": "lib/index.js",
   "scripts": {
@@ -38,12 +38,13 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "eslint": "^1.10.3",
-    "jest-cli": "^11.0.2",
-    "react": "^15.0.1",
-    "react-addons-test-utils": "^15.0.1"
+    "jest-cli": "^12.1.1",
+    "react": "^15.4.0",
+    "react-addons-test-utils": "^15.4.1",
+    "react-dom": "^15.4.1"
   },
   "peerDependencies": {
-    "react": "^0.14.0 || ^15.0.0"
+    "react": ">=15.4.0"
   },
   "jest": {
     "coverageReporters": [

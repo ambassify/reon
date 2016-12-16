@@ -1,8 +1,8 @@
 'use strict';
 
 // https://github.com/facebook/react/blob/67f8524e88abbf1ac0fd86d38a0477d11fbc7b3e/src/shared/utils/PooledClass.js
-import PooledClass from 'react/lib/PooledClass';
-import ReactEvent from 'react/lib/SyntheticEvent';
+import PooledClass from 'react-dom/lib/PooledClass';
+import ReactEvent from 'react-dom/lib/SyntheticEvent';
 
 const __PROPERTIES__ = Symbol('Properties set');
 

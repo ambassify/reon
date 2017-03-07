@@ -121,7 +121,7 @@ describe('Reon', () => {
             expect(e.nativeEvent.defaultPrevented).toBeTruthy();
 
             e.stopPropagation();
-            expect(e.isPropagationStopped()).toBeFalsy();
+            expect(e.isPropagationStopped()).toBeTruthy();
 
             for (const key in fixt_properties) {
                 expect(e[key]).toBe(fixt_properties[key]);
@@ -144,6 +144,29 @@ describe('Reon', () => {
         Reon.forward(undefined, undefined, undefined, {});
         expect(console.error).toBeCalled();
     });
+
+    it('should return defaultPrevented/stopPropagation state after trigger', () => {
+        const handler = e => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
+        const result = Reon.trigger(handler);
+
+        expect(result.isDefaultPrevented()).toBeTruthy();
+        expect(result.isPropagationStopped()).toBeTruthy();
+    })
+
+    it('should return defaultPrevented/stopPropagation state after forward', () => {
+        const handler = e => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
+        const fixt_event = new Reon(undefined, {});
+        const result = Reon.forward(handler, undefined, fixt_event);
+
+        expect(result.isDefaultPrevented()).toBeTruthy();
+        expect(result.isPropagationStopped()).toBeTruthy();
+    })
 
     describe('getFunctionName', () => {
 
@@ -194,8 +217,6 @@ describe('Reon', () => {
             });
 
             const name = getFunctionName(f);
-
-            console.log(f.toString());
 
             expect(name).toBeUndefined();
         });

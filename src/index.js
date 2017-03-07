@@ -5,6 +5,8 @@ import PooledClass from 'react-dom/lib/PooledClass';
 import ReactEvent from 'react-dom/lib/SyntheticEvent';
 
 const __PROPERTIES__ = Symbol('Properties set');
+const __DEFAULT_PREVENTED__ = Symbol('Default prevented');
+const __PROPAGATION_STOPPED__ = Symbol('Propagation stopped');
 
 export const getFunctionName = function(func) {
     if (func.name)
@@ -50,7 +52,17 @@ function executeEvent(handler, reactElement, properties) {
 
     const instance = ReonEvent.getPooled(reactElement, properties); // eslint-disable-line no-use-before-define
     handler(instance);
+
+    const prevented = instance.isDefaultPrevented();
+    const stopped = instance.isPropagationStopped();
+    const result = {
+        isDefaultPrevented: () => prevented,
+        isPropagationStopped: () => stopped
+    };
+
     ReonEvent.release(instance); // eslint-disable-line no-use-before-define
+
+    return result;
 }
 
 export default
@@ -64,7 +76,7 @@ class ReonEvent {
             });
         }
 
-        executeEvent(handler, reactElement, properties);
+        return executeEvent(handler, reactElement, properties);
     }
 
     static forward(handler, reactElement, forwardedEvent, properties = {}) {
@@ -83,7 +95,7 @@ class ReonEvent {
             console.error('If forwardedEvent is not an event you should be using ReonEvent.trigger.');
         }
 
-        executeEvent(handler, reactElement, {
+        return executeEvent(handler, reactElement, {
             ...properties,
             reonEvent,
             reactEvent,
@@ -103,9 +115,14 @@ class ReonEvent {
         let i = properties.length;
         while( i-- )
             delete this[properties[i]];
+
+        delete this[__DEFAULT_PREVENTED__];
+        delete this[__PROPAGATION_STOPPED__];
     }
 
     preventDefault() {
+        this[__DEFAULT_PREVENTED__] = true;
+
         if (this.reactEvent)
             this.reactEvent.preventDefault();
         else if (this.nativeEvent)
@@ -113,6 +130,8 @@ class ReonEvent {
     }
 
     stopPropagation() {
+        this[__PROPAGATION_STOPPED__] = true;
+
         if (this.reactEvent)
             this.reactEvent.stopPropagation();
         else if (this.nativeEvent)
@@ -120,19 +139,11 @@ class ReonEvent {
     }
 
     isDefaultPrevented() {
-        if (this.reactEvent)
-            return this.reactEvent.isDefaultPrevented();
-        else if (this.nativeEvent)
-            return this.nativeEvent.defaultPrevented;
-        else
-            return false;
+        return !!this[__DEFAULT_PREVENTED__];
     }
 
     isPropagationStopped() {
-        // there is no native equivalent for `isPropagationStopped`
-        if (!this.reactEvent) return false;
-
-        return this.reactEvent.isPropagationStopped();
+        return !!this[__PROPAGATION_STOPPED__];
     }
 
 }

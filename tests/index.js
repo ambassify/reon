@@ -236,4 +236,36 @@ describe('Reon', () => {
 
     });
 
+    it('should preserve original property descriptors', () => {
+        const eventData = Object.defineProperty({}, 'propTest', {
+            configurable: true,
+            enumerable: true,
+            get: () => 'test success'
+        });
+
+        const handler = jest.fn(e => {
+            expect(e.propTest).toBe('test success');
+        });
+
+        Reon.trigger(handler, undefined, eventData);
+        expect(handler.mock.calls.length).toBe(1);
+    });
+
+    it('should set descriptors for accessors', () => {
+        const eventData = Reon.lazy({
+            propTest: () => 'test success',
+            propRegular: 'abc',
+            propTest2: 1234
+        });
+
+        const handler = jest.fn(e => {
+            expect(e.propTest).toBe('test success');
+            expect(e.propRegular).toBe('abc');
+            expect(e.propTest2).toBe(1234);
+        });
+
+        Reon.trigger(handler, undefined, eventData);
+        expect(handler.mock.calls.length).toBe(1);
+    })
+
 });

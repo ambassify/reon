@@ -68,6 +68,24 @@ function executeEvent(handler, reactElement, properties) {
 export default
 class ReonEvent {
 
+    static lazy(properties, object = {}) {
+        const descriptors = {};
+        Object.keys(properties).forEach(key => {
+            const descriptor = { configurable: true, enumerable: true };
+
+            if (typeof properties[key] == 'function') {
+                descriptor.get = properties[key];
+            } else {
+                descriptor.writable = false;
+                descriptor.value = properties[key];
+            }
+
+            descriptors[key] = descriptor;
+        });
+
+        return Object.defineProperties(object, descriptors);
+    }
+
     static trigger(handler, reactElement, properties = {}) {
         if (__DEV__) {
             Object.keys(properties).forEach(key => {
@@ -105,7 +123,10 @@ class ReonEvent {
 
     constructor(reactElement, properties) {
         this[__PROPERTIES__] = Object.keys(properties);
-        Object.assign(this, properties);
+
+        if (typeof properties === 'object')
+            Object.defineProperties(this, Object.getOwnPropertyDescriptors(properties));
+
         this.target = reactElement;
     }
 
@@ -150,5 +171,6 @@ class ReonEvent {
 
 export const trigger = ReonEvent.trigger;
 export const forward = ReonEvent.forward;
+export const lazy = ReonEvent.lazy;
 
 PooledClass.addPoolingTo(ReonEvent, PooledClass.twoArgumentPooler);

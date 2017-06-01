@@ -36,6 +36,9 @@ Reon.trigger(eventHandler, sourceComponent, [objectContainingData]);
 
 // Forward an event previously received from Reon / React
 Reon.forward(eventHandler, sourceComponent, originalEvent, [objectContainingData]);
+
+// Create eventData object with lazy properties
+Reon.lazy(properties, [objectToAttachTo]);
 ```
 
 The `eventHandler` will receive an object as its first argument which contains all of the properties of `objectContainingData` and optionally the properties `reonEvent`, `reactEvent` and `nativeEvent` when using `Reon.forward`.
@@ -83,6 +86,30 @@ const App = (props) => (
     <Button label="foo" onClick={e => {
         e.stopPropagation();
         console.log(e.value);
+    }} />
+);
+```
+
+### Creating lazy event properties
+
+```js
+import Reon from 'reon';
+
+const Button = (props) => (
+    <button onClick={() => {
+            Reon.trigger(props.onClick, this, Reon.lazy({
+                button: () => this,
+                test: () => 'value of test property'
+            }));
+        }}>
+        {props.label}
+    </button>
+);
+
+const App = (props) => (
+    <Button label="foo" onClick={e => {
+        console.log(e.button); // prints Button instance
+        console.log(e.test); // prints "value of test property"
     }} />
 );
 ```

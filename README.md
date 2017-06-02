@@ -6,8 +6,16 @@ This library acts as a helper dealing with [React's event system](https://facebo
 
 ## Installation
 
+### React >= 15.4.0
+
 ```
 npm install --save reon
+```
+
+### React < 15.4.0
+
+```
+npm install --save reon@^1
 ```
 
 ## Goals

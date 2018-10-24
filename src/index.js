@@ -8,42 +8,11 @@ const __PROPERTIES__ = Symbol('Properties set');
 const __DEFAULT_PREVENTED__ = Symbol('Default prevented');
 const __PROPAGATION_STOPPED__ = Symbol('Propagation stopped');
 
-export const getFunctionName = function(func) {
-    if (func.name)
-        return func.name;
-
-    if (func === Function || func === Function.prototype.constructor)
-        return 'Function';
-
-    const name = /function\s*([^\s|\(]+)/.exec('' + func);
-
-    if (!name)
-        return undefined;
-
-    return name[1];
-};
-
-const ReactEventName = getFunctionName(ReactEvent);
-const _isSyntheticEventCache = {};
 export const isSyntheticEvent = function(e) {
-    const key = e && e.__proto__ ? e.__proto__.constructor : '__none__';
-
-    if (_isSyntheticEventCache[key])
-        return _isSyntheticEventCache[key];
-
-    let value;
-
-    if (e instanceof ReonEvent) // eslint-disable-line no-use-before-define
-        value = true;
-    else if (!e || !e.__proto__)
-        value = false;
-    else if (getFunctionName(e.__proto__.constructor) === ReactEventName)
-        value = true;
-    else
-        value = isSyntheticEvent(e.__proto__);
-
-    _isSyntheticEventCache[key] = value;
-    return value;
+    return (
+        e instanceof ReonEvent || // eslint-disable-line no-use-before-define
+        e instanceof ReactEvent
+    );
 };
 
 function executeEvent(handler, reactElement, properties) {

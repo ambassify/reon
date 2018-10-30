@@ -1,10 +1,7 @@
 'use strict';
 
-// https://github.com/facebook/react/blob/67f8524e88abbf1ac0fd86d38a0477d11fbc7b3e/src/shared/utils/PooledClass.js
-import PooledClass from 'react-dom/lib/PooledClass';
 import ReactEvent from 'react-dom/lib/SyntheticEvent';
 
-const __PROPERTIES__ = Symbol('Properties set');
 const __DEFAULT_PREVENTED__ = Symbol('Default prevented');
 const __PROPAGATION_STOPPED__ = Symbol('Propagation stopped');
 
@@ -19,19 +16,10 @@ function executeEvent(handler, reactElement, properties) {
     if (typeof handler != 'function')
         return;
 
-    const instance = ReonEvent.getPooled(reactElement, properties); // eslint-disable-line no-use-before-define
+    const instance = new ReonEvent(reactElement, properties); // eslint-disable-line no-use-before-define
     handler(instance);
 
-    const prevented = instance.isDefaultPrevented();
-    const stopped = instance.isPropagationStopped();
-    const result = {
-        isDefaultPrevented: () => prevented,
-        isPropagationStopped: () => stopped
-    };
-
-    ReonEvent.release(instance); // eslint-disable-line no-use-before-define
-
-    return result;
+    return instance;
 }
 
 export default
@@ -91,23 +79,10 @@ class ReonEvent {
     }
 
     constructor(reactElement, properties) {
-        this[__PROPERTIES__] = Object.keys(properties);
-
         if (typeof properties === 'object')
             Object.defineProperties(this, Object.getOwnPropertyDescriptors(properties));
 
         this.target = reactElement;
-    }
-
-    // Called by PooledClass on release
-    destructor() {
-        const properties = this[__PROPERTIES__];
-        let i = properties.length;
-        while( i-- )
-            delete this[properties[i]];
-
-        delete this[__DEFAULT_PREVENTED__];
-        delete this[__PROPAGATION_STOPPED__];
     }
 
     preventDefault() {
@@ -141,5 +116,3 @@ class ReonEvent {
 export const trigger = ReonEvent.trigger;
 export const forward = ReonEvent.forward;
 export const lazy = ReonEvent.lazy;
-
-PooledClass.addPoolingTo(ReonEvent, PooledClass.twoArgumentPooler);

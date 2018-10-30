@@ -2,7 +2,7 @@
 
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import Reon, { trigger, forward, isSyntheticEvent, getFunctionName } from '../src/index';
+import Reon, { isSyntheticEvent } from '../src/index';
 
 describe('Reon', () => {
 
@@ -167,74 +167,6 @@ describe('Reon', () => {
         expect(result.isDefaultPrevented()).toBeTruthy();
         expect(result.isPropagationStopped()).toBeTruthy();
     })
-
-    describe('getFunctionName', () => {
-
-        it('should return the correct function name', () => {
-            const f = function helloWorld() {};
-            const name = getFunctionName(f);
-
-            expect(name).toBe('helloWorld');
-        });
-
-        it('should return the correct funtion name in IE', () => {
-            const f = function helloWorld() {};
-
-            // Emulate Internet Explorer which does not have the name property.
-            Object.defineProperty(f, 'name', {
-                value: false
-            });
-
-            const name = getFunctionName(f);
-            expect(name).toBe('helloWorld');
-        });
-
-        it('should return the correct function name in IE for Function', () => {
-            const f = Function;
-
-            // Emulate Internet Explorer which does not have the name property.
-            const FunctionDescriptor = Object.getOwnPropertyDescriptor(f, 'name');
-            Object.defineProperty(f, 'name', {
-                value: false
-            });
-
-            const name = getFunctionName(f);
-            expect(name).toBe('Function');
-
-            // Reset original descriptor
-            Object.defineProperty(f, 'name', FunctionDescriptor);
-        });
-
-        it('should not return a name for anonymous functions', () => {
-            const f = function() {
-                // Babel add the name `f` to the method when we assign it directly.
-                return function() {};
-            }();
-
-            // Emulate Internet Explorer which does not have the name property.
-            Object.defineProperty(f, 'name', {
-                value: false
-            });
-
-            const name = getFunctionName(f);
-
-            expect(name).toBeUndefined();
-        });
-
-        it('should export trigger function', () => {
-            const handler = jest.fn(() => {});
-            trigger(handler);
-            expect(handler.mock.calls.length).toBe(1);
-        });
-
-        it('should export forward function', () => {
-            const fixt_event = new Reon(undefined, {});
-            const handler = jest.fn(() => {});
-            Reon.forward(handler, undefined, fixt_event);
-            expect(handler.mock.calls.length).toBe(1);
-        });
-
-    });
 
     it('should preserve original property descriptors', () => {
         const eventData = Object.defineProperty({}, 'propTest', {

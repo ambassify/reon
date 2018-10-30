@@ -38,13 +38,9 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "eslint": "^1.10.3",
-    "jest-cli": "^12.1.1",
-    "react": "^15.4.0",
-    "react-addons-test-utils": "^15.4.1",
-    "react-dom": "^15.4.1"
-  },
-  "peerDependencies": {
-    "react-dom": ">=15.4.0"
+    "jest-cli": "^23.6.0",
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2"
   },
   "jest": {
     "coverageReporters": [
@@ -52,8 +48,10 @@
       "lcov"
     ],
     "collectCoverage": true,
-    "testDirectoryName": "tests",
-    "testPathDirs": [
+    "testMatch": [
+      "**/tests/**/*.js"
+    ],
+    "roots": [
       "<rootDir>/tests"
     ],
     "automock": false

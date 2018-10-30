@@ -1,15 +1,36 @@
 'use strict';
 
-import ReactEvent from 'react-dom/lib/SyntheticEvent';
-
 const __DEFAULT_PREVENTED__ = Symbol('Default prevented');
 const __PROPAGATION_STOPPED__ = Symbol('Propagation stopped');
+const _isSyntheticEventCache = new Map();
 
 export const isSyntheticEvent = function(e) {
-    return (
-        e instanceof ReonEvent || // eslint-disable-line no-use-before-define
-        e instanceof ReactEvent
-    );
+    if (typeof e !== 'object')
+        return false;
+
+    if (e instanceof ReonEvent) // eslint-disable-line no-use-before-define
+        return true;
+
+    const c = e.constructor;
+    if (_isSyntheticEventCache.has(c))
+        return _isSyntheticEventCache.get(c);
+
+    /**
+     * React v15 PooledClass used `instancePool` property,
+     * while React v16 Synthentic events use `eventPool`
+     */
+    const { Interface, getPooled, release, eventPool, instancePool } = c;
+
+    const result = Interface &&
+        Array.isArray(eventPool || instancePool) &&
+        typeof getPooled === 'function' &&
+        typeof release === 'function' &&
+        typeof Interface.eventPhase !== 'undefined' &&
+        typeof Interface.bubbles !== 'undefined';
+
+    _isSyntheticEventCache.set(c, result);
+
+    return result;
 };
 
 function executeEvent(handler, reactElement, properties) {
@@ -19,7 +40,13 @@ function executeEvent(handler, reactElement, properties) {
     const instance = new ReonEvent(reactElement, properties); // eslint-disable-line no-use-before-define
     handler(instance);
 
-    return instance;
+    const prevented = instance.isDefaultPrevented();
+    const stopped = instance.isPropagationStopped();
+
+    return {
+        isDefaultPrevented: () => prevented,
+        isPropagationStopped: () => stopped
+    };
 }
 
 export default

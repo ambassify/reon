@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import Reon, { isSyntheticEvent } from '../src/index';
 
 describe('Reon', () => {
@@ -100,11 +100,8 @@ describe('Reon', () => {
         const fixt_target = Symbol('target');
         const fixt_properties = { foo: 'bar' };
 
-        const fixt_event = {
-            __proto__: new Event('click'),
-            preventDefault: jest.fn(() => fixt_event.defaultPrevented = true),
-            defaultPrevented: false
-        }
+        const fixt_event = new Event('click');
+        jest.spyOn(fixt_event, 'preventDefault');
 
         const handler = jest.fn(e => {
             expect(e instanceof Reon).toBe(true);
@@ -118,7 +115,7 @@ describe('Reon', () => {
 
             e.preventDefault();
             expect(e.isDefaultPrevented()).toBeTruthy();
-            expect(e.nativeEvent.defaultPrevented).toBeTruthy();
+            expect(e.nativeEvent.preventDefault.mock.calls.length).toBe(1);
 
             e.stopPropagation();
             expect(e.isPropagationStopped()).toBeTruthy();

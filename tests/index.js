@@ -61,15 +61,12 @@ describe('Reon', () => {
     });
 
     it('should be able to forward React events', () => {
-        const our_key = Symbol('key');
-        const fixt_native = Symbol('native');
         const fixt_target = Symbol('target');
         const fixt_properties = { foo: 'bar' };
 
         const handler = jest.fn(e => {
             expect(e instanceof Reon).toBe(true);
             expect(isSyntheticEvent(e.reactEvent)).toBe(true);
-            //expect(e.nativeEvent[our_key]).toBe(fixt_native);
 
             expect(e.target).toBe(fixt_target);
 
@@ -92,9 +89,7 @@ describe('Reon', () => {
         const button = TestUtils.renderIntoDocument(
             <button onClick={e => Reon.forward(handler, fixt_target, e, fixt_properties)} />
         );
-        fireEvent.click(button, new MouseEvent('click', {
-            [our_key]: fixt_native,
-        }));
+        fireEvent.click(button);
 
         expect(handler.mock.calls.length).toBe(1);
     });

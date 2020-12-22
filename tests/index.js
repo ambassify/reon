@@ -3,6 +3,7 @@
 import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 import Reon, { isSyntheticEvent } from '../src/index';
+import fireEvent from '@testing-library/user-event';
 
 describe('Reon', () => {
 
@@ -68,7 +69,7 @@ describe('Reon', () => {
         const handler = jest.fn(e => {
             expect(e instanceof Reon).toBe(true);
             expect(isSyntheticEvent(e.reactEvent)).toBe(true);
-            expect(e.nativeEvent[our_key]).toBe(fixt_native);
+            //expect(e.nativeEvent[our_key]).toBe(fixt_native);
 
             expect(e.target).toBe(fixt_target);
 
@@ -91,7 +92,9 @@ describe('Reon', () => {
         const button = TestUtils.renderIntoDocument(
             <button onClick={e => Reon.forward(handler, fixt_target, e, fixt_properties)} />
         );
-        TestUtils.SimulateNative.click(button, { [our_key]: fixt_native });
+        fireEvent.click(button, new MouseEvent('click', {
+            [our_key]: fixt_native,
+        }));
 
         expect(handler.mock.calls.length).toBe(1);
     });

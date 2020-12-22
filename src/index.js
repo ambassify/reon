@@ -16,13 +16,22 @@ export const isSyntheticEvent = function(e) {
         return _isSyntheticEventCache.get(c);
 
     /**
+     * React v17 detection which does not use event pools
+     * https://reactjs.org/blog/2020/08/10/react-v17-rc.html#no-event-pooling
+     */
+    if (typeof e.persist == 'function' && typeof e.getPooled != 'function') {
+        _isSyntheticEventCache.set(c, true);
+        return true;
+    }
+
+    /**
      * React v15 PooledClass used `instancePool` property,
      * while React v16 Synthentic events use `eventPool`
      */
     const { Interface, getPooled, release, eventPool, instancePool } = c;
 
     const result = Interface &&
-        Array.isArray(eventPool || instancePool) &&
+        (Array.isArray(eventPool || instancePool)) &&
         typeof getPooled === 'function' &&
         typeof release === 'function' &&
         typeof Interface.eventPhase !== 'undefined' &&

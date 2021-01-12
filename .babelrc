@@ -1,8 +1,9 @@
 {
-    "presets": [["@babel/preset-env", { "targets": "defaults" }]],
+    "presets": [["@babel/preset-env", { "targets": "defaults" }], "@babel/preset-react"],
     "comments": false,
     "plugins": [
-        "@babel/plugin-transform-runtime"
+        "@babel/plugin-transform-runtime",
+        "transform-dev"
     ],
     "env": {
         "production": {

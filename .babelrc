@@ -1,12 +1,8 @@
 {
-    "presets": [ "es2015", "stage-0", "react" ],
+    "presets": [["@babel/preset-env", { "targets": "defaults" }]],
     "comments": false,
     "plugins": [
-        "transform-runtime",
-        "transform-undefined-to-void",
-        "transform-property-literals",
-        "transform-member-expression-literals",
-        "transform-dev"
+        "@babel/plugin-transform-runtime"
     ],
     "env": {
         "production": {

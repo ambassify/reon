@@ -1,5 +1,3 @@
-'use strict';
-
 const __DEFAULT_PREVENTED__ = Symbol('Default prevented');
 const __PROPAGATION_STOPPED__ = Symbol('Propagation stopped');
 const _isSyntheticEventCache = new Map();

@@ -3,6 +3,9 @@
     "comments": false,
     "plugins": [
         "@babel/plugin-transform-runtime",
+        "@babel/plugin-transform-member-expression-literals",
+        "@babel/plugin-transform-property-literals",
+        "transform-undefined-to-void",
         "transform-dev"
     ],
     "env": {

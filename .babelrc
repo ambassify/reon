@@ -1,11 +1,11 @@
 {
-    "presets": [ "es2015", "stage-0", "react" ],
+    "presets": [["@babel/preset-env", { "targets": "defaults" }], "@babel/preset-react"],
     "comments": false,
     "plugins": [
-        "transform-runtime",
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-transform-member-expression-literals",
+        "@babel/plugin-transform-property-literals",
         "transform-undefined-to-void",
-        "transform-property-literals",
-        "transform-member-expression-literals",
         "transform-dev"
     ],
     "env": {

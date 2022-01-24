@@ -1,3 +1,5 @@
+import React from 'react';
+
 const __DEFAULT_PREVENTED__ = Symbol('Default prevented');
 const __PROPAGATION_STOPPED__ = Symbol('Propagation stopped');
 const _isSyntheticEventCache = new Map();
@@ -40,11 +42,11 @@ export const isSyntheticEvent = function(e) {
     return result;
 };
 
-function executeEvent(handler, reactElement, properties) {
+function executeEvent(handler, properties) {
     if (typeof handler != 'function')
         return;
 
-    const instance = new ReonEvent(reactElement, properties); // eslint-disable-line no-use-before-define
+    const instance = new ReonEvent(properties); // eslint-disable-line no-use-before-define
     handler(instance);
 
     const prevented = instance.isDefaultPrevented();
@@ -54,6 +56,19 @@ function executeEvent(handler, reactElement, properties) {
         isDefaultPrevented: () => prevented,
         isPropagationStopped: () => stopped
     };
+}
+
+function isDeprecatedArguments(element, properties) {
+    const isElement = React.isValidElement(element);
+    const isElementEmpty = !element;
+    const isPropertiesSet = properties && typeof properties === 'object';
+
+    if (isElement || (isElementEmpty && isPropertiesSet)) {
+        console.error('Deprecated: passing reactElement to Reon methods is deprecated and will be removed in the next major version.');
+        return true;
+    }
+
+    return false;
 }
 
 export default
@@ -77,7 +92,15 @@ class ReonEvent {
         return Object.defineProperties(object, descriptors);
     }
 
-    static trigger(handler, reactElement, properties = {}) {
+    static trigger(handler/* , reactElement @deprecated */, properties) {
+        if (isDeprecatedArguments(properties, arguments[2])) {
+            const target = properties;
+            properties = arguments[2] || {};
+            properties = { ...properties, target: target || properties.target };
+        } else {
+            properties = properties || {};
+        }
+
         if (__DEV__) {
             Object.keys(properties).forEach(key => {
                 if (isSyntheticEvent(properties[key]))
@@ -85,10 +108,19 @@ class ReonEvent {
             });
         }
 
-        return executeEvent(handler, reactElement, properties);
+        return executeEvent(handler, properties);
     }
 
-    static forward(handler, reactElement, forwardedEvent, properties = {}) {
+    static forward(handler/* , reactElement @deprecated */, forwardedEvent, properties) {
+        if (isDeprecatedArguments(forwardedEvent, arguments[3])) {
+            const target = forwardedEvent;
+            forwardedEvent = properties;
+            properties = arguments[3] || {};
+            properties = { ...properties, target: target || properties.target };
+        } else {
+            properties = properties || {};
+        }
+
         let reonEvent, reactEvent, nativeEvent;
 
         if (forwardedEvent instanceof ReonEvent) {
@@ -104,7 +136,7 @@ class ReonEvent {
             console.error('If forwardedEvent is not an event you should be using ReonEvent.trigger.');
         }
 
-        return executeEvent(handler, reactElement, {
+        return executeEvent(handler, {
             ...properties,
             reonEvent,
             reactEvent,
@@ -112,11 +144,17 @@ class ReonEvent {
         });
     }
 
-    constructor(reactElement, properties) {
+    constructor(/* reactElement @deprecated, */properties) {
+        if (isDeprecatedArguments(properties, arguments[1])) {
+            const target = properties;
+            properties = arguments[1] || {};
+            properties = { ...properties, target: target || properties.target };
+        } else {
+            properties = properties || {};
+        }
+
         if (typeof properties === 'object')
             Object.defineProperties(this, Object.getOwnPropertyDescriptors(properties));
-
-        this.target = reactElement;
     }
 
     preventDefault() {

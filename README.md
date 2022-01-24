@@ -37,19 +37,17 @@ if (this.props.onUploadReady)
 
 you now write
 ```js
-Reon.trigger(this.props.onUploadReady, this, {
-    file: file
-});
+Reon.trigger(this.props.onUploadReady, { file });
 ```
 
 ## Usage
 
 ```
 // Trigger new events
-Reon.trigger(eventHandler, sourceComponent, [objectContainingData]);
+Reon.trigger(eventHandler, [objectContainingData]);
 
 // Forward an event previously received from Reon / React
-Reon.forward(eventHandler, sourceComponent, originalEvent, [objectContainingData]);
+Reon.forward(eventHandler, originalEvent, [objectContainingData]);
 
 // Create eventData object with lazy properties
 Reon.lazy(properties, [objectToAttachTo]);
@@ -70,7 +68,7 @@ import Reon from 'reon';
 
 const Button = (props) => (
     <button onClick={e => {
-            Reon.trigger(props.onClick, this, { value: props.label });
+            Reon.trigger(props.onClick, { value: props.label });
         }}>
         {props.label}
     </button>
@@ -90,7 +88,7 @@ import Reon from 'reon';
 
 const Button = (props) => (
     <button onClick={e => {
-            Reon.forward(props.onClick, this, e, { value: props.label });
+            Reon.forward(props.onClick, e, { value: props.label });
         }}>
         {props.label}
     </button>
@@ -111,7 +109,7 @@ import Reon from 'reon';
 
 const Button = (props) => (
     <button onClick={() => {
-            Reon.trigger(props.onClick, this, Reon.lazy({
+            Reon.trigger(props.onClick, Reon.lazy({
                 button: () => this,
                 test: () => 'value of test property'
             }));

@@ -160,7 +160,9 @@ class ReonEvent {
     preventDefault() {
         this[__DEFAULT_PREVENTED__] = true;
 
-        if (this.reactEvent)
+        if (this.reonEvent)
+            this.reonEvent.preventDefault();
+        else if (this.reactEvent)
             this.reactEvent.preventDefault();
         else if (this.nativeEvent)
             this.nativeEvent.preventDefault();
@@ -169,7 +171,9 @@ class ReonEvent {
     stopPropagation() {
         this[__PROPAGATION_STOPPED__] = true;
 
-        if (this.reactEvent)
+        if (this.reonEvent)
+            this.reonEvent.stopPropagation();
+        else if (this.reactEvent)
             this.reactEvent.stopPropagation();
         else if (this.nativeEvent)
             this.nativeEvent.stopPropagation();

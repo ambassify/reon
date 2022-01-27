@@ -126,6 +126,11 @@ describe('Reon', () => {
         expect(console.error).toBeCalled();
     });
 
+    it('should not crash on "null" values in properties', () => {
+        const handler = () => {};
+        Reon.trigger(handler, { foo: null });
+    });
+
     it('should return defaultPrevented/stopPropagation state after trigger', () => {
         const handler = e => {
             e.preventDefault();

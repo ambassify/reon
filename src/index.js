@@ -5,7 +5,7 @@ const __PROPAGATION_STOPPED__ = Symbol('Propagation stopped');
 const _isSyntheticEventCache = new Map();
 
 export const isSyntheticEvent = function(e) {
-    if (typeof e !== 'object')
+    if (!e || typeof e !== 'object')
         return false;
 
     if (e instanceof ReonEvent) // eslint-disable-line no-use-before-define

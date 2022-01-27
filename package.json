@@ -1,6 +1,6 @@
 {
   "name": "reon",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Event library for React built to resemble React's internal Synthetic Events",
   "main": "lib/index.js",
   "scripts": {

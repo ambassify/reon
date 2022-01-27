@@ -216,6 +216,26 @@ describe('Reon', () => {
             });
         }
 
+        it('should work with signature Reon.trigger(handler, element, properties) when element is a component instance', () => {
+            let handler;
+
+            class Test extends React.Component {
+
+                componentDidMount() {
+                    handler = createHandler(this, fixt_properties);
+                    Reon.trigger(handler, this, fixt_properties);
+                }
+
+                render() {
+                    return null;
+                }
+            }
+
+            TestUtils.renderIntoDocument(<Test />);
+
+            expect(handler.mock.calls.length).toBe(1);
+        });
+
         it('should work with signature Reon.trigger(handler, element, properties)', () => {
             const handler = createHandler(fixt_target, fixt_properties);
             Reon.trigger(handler, fixt_target, fixt_properties);

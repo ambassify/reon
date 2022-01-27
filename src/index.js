@@ -58,8 +58,12 @@ function executeEvent(handler, properties) {
     };
 }
 
+function isComponentInstance(element) {
+    return !!element?.constructor?.prototype?.isReactComponent;
+}
+
 function isDeprecatedArguments(element, properties) {
-    const isElement = React.isValidElement(element);
+    const isElement = React.isValidElement(element) || isComponentInstance(element);
     const isElementEmpty = !element;
     const isPropertiesSet = properties && typeof properties === 'object';
 

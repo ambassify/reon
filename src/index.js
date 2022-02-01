@@ -64,10 +64,9 @@ function isComponentInstance(element) {
 
 function isDeprecatedArguments(element, properties) {
     const isElement = React.isValidElement(element) || isComponentInstance(element);
-    const isElementEmpty = !element;
     const isPropertiesSet = properties && typeof properties === 'object';
 
-    if (isElement || (isElementEmpty && isPropertiesSet)) {
+    if (isPropertiesSet || isElement) {
         console.error('Deprecated: passing reactElement to Reon methods is deprecated and will be removed in the next major version.');
         return true;
     }

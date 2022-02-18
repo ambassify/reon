@@ -4,6 +4,8 @@ const __DEFAULT_PREVENTED__ = Symbol('Default prevented');
 const __PROPAGATION_STOPPED__ = Symbol('Propagation stopped');
 const _isSyntheticEventCache = new Map();
 
+const nope = () => false;
+
 export const isSyntheticEvent = function(e) {
     if (!e || typeof e !== 'object')
         return false;
@@ -44,7 +46,7 @@ export const isSyntheticEvent = function(e) {
 
 function executeEvent(handler, properties) {
     if (typeof handler != 'function')
-        return;
+        return { isDefaultPrevented: nope, isPropagationStopped: nope };
 
     const instance = new ReonEvent(properties); // eslint-disable-line no-use-before-define
     handler(instance);

@@ -154,6 +154,12 @@ describe('Reon', () => {
         expect(result.isPropagationStopped()).toBeTruthy();
     });
 
+    it('should return defaultPrevented/stopPropagation for non-function handlers', () => {
+        const result = Reon.forward(undefined);
+        expect(result.isDefaultPrevented()).toBeFalsy();
+        expect(result.isPropagationStopped()).toBeFalsy();
+    });
+
     it('should preserve original property descriptors', () => {
         const eventData = Object.defineProperty({}, 'propTest', {
             configurable: true,
